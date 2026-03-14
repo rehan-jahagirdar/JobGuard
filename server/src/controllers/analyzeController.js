@@ -1,5 +1,5 @@
 import { scrapeJobPosting } from '../services/scraperService.js';
-import { analyzeWithClaude } from '../services/claudeService.js';
+import { analyzeWithGemini } from '../services/geminiService.js';
 import { checkCompanyDomain } from '../services/domainService.js';
 import { db, admin } from '../config/firebase.js';
 import { nanoid } from 'nanoid';
@@ -32,7 +32,7 @@ export async function analyzePosting(req, res, next) {
     }
 
     // Step 2: AI Analysis
-    const aiResult = await analyzeWithClaude(jobText);
+    const aiResult = await analyzeWithGemini(jobText);
 
     // Step 3: Domain check (non-blocking — don't fail if this errors)
     let domainCheck = { checked: false };

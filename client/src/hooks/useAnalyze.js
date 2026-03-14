@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { analyzePosting } from '../services/api';
 
 export function useAnalyze() {
-  const [result, setResult] = useState(null);
+  const [result, setResult]   = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [step, setStep] = useState('idle'); // idle | fetching | analyzing | done
+  const [error, setError]     = useState(null);
+  const [step, setStep]       = useState('idle');
 
   const analyze = async ({ type, content }) => {
     setLoading(true);
@@ -13,20 +13,12 @@ export function useAnalyze() {
     setResult(null);
 
     try {
-      setStep(type === 'url' ? 'fetching' : 'analyzing');
-      
-      // Small delay so user sees the fetching step
       if (type === 'url') {
-        await new Promise(r => setTimeout(r, 800));
-        setStep('analyzing');
+        setStep('fetching');
+        await new Promise(r => setTimeout(r, 600));
       }
-
-      const data = await analyzePosting({
-        type,
-        content,
-        userId: localStorage.getItem('jobguard_uid') || 'anonymous'
-      });
-
+      setStep('analyzing');
+      const data = await analyzePosting({ type, content });
       setResult(data);
       setStep('done');
     } catch (err) {

@@ -1,40 +1,59 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import Aurora from './components/Aurora';
 import Home from './pages/Home';
-import Result from './pages/Result';
-import History from './pages/History';
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-950 text-white">
+      <div className="min-h-screen relative">
+        <Aurora />
+
         {/* Header */}
-        <header className="border-b border-gray-800 px-6 py-4">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
+        <motion.header
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 px-6 py-5"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+        >
+          <div className="max-w-2xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-sm font-bold">
+              {/* Logo */}
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold"
+                style={{
+                  background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                  boxShadow: '0 0 20px rgba(124, 58, 237, 0.5)',
+                }}
+              >
                 JG
               </div>
-              <span className="font-bold text-lg">JobGuard</span>
-              <span className="text-gray-500 text-sm hidden sm:block">
-                Check before you apply
+              <span className="font-bold text-lg tracking-tight">JobGuard</span>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full hidden sm:block"
+                style={{
+                  background: 'rgba(124, 58, 237, 0.15)',
+                  border: '1px solid rgba(124, 58, 237, 0.2)',
+                  color: '#a78bfa',
+                }}
+              >
+                AI Powered
               </span>
             </div>
-            <a href="/history" className="text-gray-400 hover:text-white text-sm transition-colors">
-              History
-            </a>
+            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
+              Check before you apply
+            </span>
           </div>
-        </header>
+        </motion.header>
 
-        <main className="max-w-4xl mx-auto px-4 py-8">
+        {/* Main */}
+        <main className="relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/result/:shareId" element={<Result />} />
-            <Route path="/history" element={<History />} />
           </Routes>
         </main>
       </div>
     </BrowserRouter>
   );
 }
-
-export default App;
