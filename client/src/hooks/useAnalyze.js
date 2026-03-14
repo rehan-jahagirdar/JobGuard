@@ -8,28 +8,18 @@ export function useAnalyze() {
   const [step, setStep]       = useState('idle');
 
   const analyze = async ({ type, content }) => {
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
+    setLoading(true); setError(null); setResult(null);
     try {
-      if (type === 'url') {
-        setStep('fetching');
-        await new Promise(r => setTimeout(r, 700));
-      }
+      if (type === 'url') { setStep('fetching'); await new Promise(r => setTimeout(r, 700)); }
       setStep('analyzing');
       const data = await analyzePosting({ type, content });
-      setResult(data);
-      setStep('done');
+      setResult(data); setStep('done');
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Analysis failed. Please try again.');
       setStep('idle');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const reset = () => { setResult(null); setError(null); setStep('idle'); };
-
   return { result, loading, error, step, analyze, reset };
 }

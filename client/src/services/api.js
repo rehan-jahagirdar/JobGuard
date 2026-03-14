@@ -2,10 +2,7 @@ import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
-const api = axios.create({
-  baseURL: API_BASE,
-  timeout: 60000,
-});
+const api = axios.create({ baseURL: API_BASE, timeout: 60000 });
 
 export const analyzePosting = async ({ type, content, userId = 'anonymous' }) => {
   const { data } = await api.post('/analyze', { type, content, userId });
