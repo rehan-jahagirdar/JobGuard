@@ -1,94 +1,69 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-const VERDICT_CONFIG = {
-  SAFE:        { color: '#22c55e', label: 'Safe',        glow: 'rgba(34, 197, 94, 0.4)',   emoji: '✅' },
-  SUSPICIOUS:  { color: '#f59e0b', label: 'Suspicious',  glow: 'rgba(245, 158, 11, 0.4)',  emoji: '⚠️' },
-  LIKELY_FAKE: { color: '#ef4444', label: 'Likely Fake', glow: 'rgba(239, 68, 68, 0.4)',   emoji: '🚨' },
+const V = {
+  SAFE:        { color:'#23d18b', label:'Safe',        emoji:'✅', glow:'rgba(35,209,139,.5)' },
+  SUSPICIOUS:  { color:'#f5a623', label:'Suspicious',  emoji:'⚠️', glow:'rgba(245,166,35,.5)' },
+  LIKELY_FAKE: { color:'#f5564a', label:'Likely Fake', emoji:'🚨', glow:'rgba(245,86,74,.5)'  },
 };
 
 export default function TrustScoreGauge({ score, verdict }) {
-  const [displayScore, setDisplayScore] = useState(0);
-  const config = VERDICT_CONFIG[verdict] || VERDICT_CONFIG.SUSPICIOUS;
+  const [n, setN] = useState(0);
+  const cfg = V[verdict] || V.SUSPICIOUS;
 
-  // ReactBits-style CountUp animation
   useEffect(() => {
-    let start = 0;
-    const duration = 1500;
-    const startTime = performance.now();
-
+    const t0 = performance.now();
+    const dur = 1600;
     const tick = (now) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplayScore(Math.round(eased * score));
-      if (progress < 1) requestAnimationFrame(tick);
+      const p = Math.min((now-t0)/dur, 1);
+      const e = 1 - Math.pow(1-p, 4);
+      setN(Math.round(e*score));
+      if (p < 1) requestAnimationFrame(tick);
     };
-
     requestAnimationFrame(tick);
   }, [score]);
 
-  const radius = 58;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (displayScore / 100) * circumference;
+  const R = 60, C = 2*Math.PI*R;
+  const offset = C - (n/100)*C;
 
   return (
-    <div className="flex flex-col items-center gap-5">
-      {/* SVG gauge */}
+    <div className="flex flex-col items-center gap-5 shrink-0">
       <div className="relative w-44 h-44">
-        {/* Glow behind gauge */}
-        <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            boxShadow: `0 0 60px ${config.glow}`,
-            opacity: 0.6,
-          }}
-        />
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 130 130">
-          {/* Track */}
-          <circle
-            cx="65" cy="65" r={radius}
-            fill="none"
-            stroke="rgba(255,255,255,0.06)"
-            strokeWidth="10"
-          />
-          {/* Score arc */}
-          <motion.circle
-            cx="65" cy="65" r={radius}
-            fill="none"
-            stroke={config.color}
-            strokeWidth="10"
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            style={{ transition: 'stroke-dashoffset 0.016s linear', filter: `drop-shadow(0 0 8px ${config.color})` }}
-          />
+        {/* outer glow */}
+        <div className="absolute inset-0 rounded-full"
+          style={{ boxShadow:`0 0 70px ${cfg.glow}`, opacity:.5 }} />
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 136 136">
+          <circle cx="68" cy="68" r={R} fill="none"
+            stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+          <circle cx="68" cy="68" r={R} fill="none"
+            stroke={cfg.color} strokeWidth="10" strokeLinecap="round"
+            strokeDasharray={C} strokeDashoffset={offset}
+            style={{
+              transition:'stroke-dashoffset .016s linear',
+              filter:`drop-shadow(0 0 10px ${cfg.color})`
+            }} />
         </svg>
-
-        {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-5xl font-bold tabular-nums" style={{ color: config.color }}>
-            {displayScore}
-          </span>
-          <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>/ 100</span>
+          <span className="text-5xl font-bold tabular-nums"
+            style={{ fontFamily:'Syne,sans-serif', color:cfg.color }}>{n}</span>
+          <span style={{ color:'var(--muted)', fontSize:11 }}>/ 100</span>
         </div>
       </div>
 
-      {/* Verdict badge */}
       <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
+        initial={{ scale:0, opacity:0 }}
+        animate={{ scale:1, opacity:1 }}
+        transition={{ delay:.5, type:'spring', stiffness:220 }}
         className="flex items-center gap-2 px-5 py-2 rounded-full font-semibold text-sm"
         style={{
-          background: `${config.color}18`,
-          border: `1px solid ${config.color}44`,
-          color: config.color,
-          boxShadow: `0 0 20px ${config.glow}`,
+          background:`${cfg.color}18`,
+          border:`1px solid ${cfg.color}44`,
+          color: cfg.color,
+          boxShadow:`0 0 24px ${cfg.glow}`,
+          fontFamily:'Syne,sans-serif',
         }}
       >
-        {config.emoji} {config.label}
+        {cfg.emoji} {cfg.label}
       </motion.div>
     </div>
   );
