@@ -1,37 +1,6 @@
 // server/src/services/geminiService.js
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Only load .env in development — Railway injects vars directly
-// Loading .env on Railway overwrites injected vars with undefined
-const envPath = join(__dirname, '../../.env');
-if (existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-  console.log('Gemini: loaded .env file (development)');
-} else {
-  console.log('Gemini: using Railway environment variables (production)');
-}
-
-const apiKey = process.env.GEMINI_API_KEY;
-console.log('Gemini Key:', apiKey ? apiKey.slice(0, 8) + '...' : '❌ NOT FOUND');
-
-const genAI = new GoogleGenerativeAI(apiKey);
-
-const model = genAI.getGenerativeModel({
-  model: 'gemini-3-flash-preview',
-  generationConfig: {
-    responseMimeType: 'application/json',
-    temperature: 0.2,
-    maxOutputTokens: 1500,
-  }
-});
 
 const SCAM_DETECTION_PROMPT = `You are JobGuard, an expert AI system trained to detect fake and fraudulent job postings in India. You analyze job postings with deep knowledge of:
 - Common scam patterns used on LinkedIn, Naukri, Internshala, and WhatsApp
@@ -77,6 +46,32 @@ Flag category meanings:
 - LANGUAGE: Poor grammar, excessive capital letters, emoji overuse, unprofessional tone`;
 
 export async function analyzeWithGemini(jobText) {
+
+  // ✅ Read key at function call time — NOT at module load time
+  // This is critical for Railway — env vars aren't available at import time
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  console.log('=== GEMINI DEBUG ===');
+  console.log('API Key found:', apiKey ? '✅ ' + apiKey.slice(0, 8) + '...' : '❌ NOT FOUND');
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('===================');
+
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY environment variable is not set on Railway.');
+  }
+
+  // Create fresh client every call — guarantees latest env var value
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  const model = genAI.getGenerativeModel({
+    model: 'gemini-3-flash-preview',
+    generationConfig: {
+      responseMimeType: 'application/json',
+      temperature: 0.2,
+      maxOutputTokens: 1500,
+    }
+  });
+
   const prompt = `${SCAM_DETECTION_PROMPT}
 
 JOB POSTING TO ANALYZE:
@@ -98,7 +93,6 @@ ${jobText}`;
     }
 
     parsed.trustScore = Math.max(0, Math.min(100, parsed.trustScore));
-
     return parsed;
 
   } catch (err) {
@@ -111,19 +105,22 @@ export function interpretGeminiError(err) {
   const msg = err.message || '';
 
   if (msg.includes('API_KEY_INVALID')) {
-    return 'Gemini API key is invalid. Check your .env file.';
+    return 'Gemini API key is invalid. Check Railway variables.';
   }
   if (msg.includes('QUOTA_EXCEEDED') || msg.includes('429')) {
     return 'Gemini free tier limit reached. Try again in a minute.';
   }
   if (msg.includes('not found') || msg.includes('404')) {
-    return 'Gemini model not found. Check the model name in geminiService.js.';
+    return 'Gemini model not found. Check the model name.';
   }
   if (msg.includes('SAFETY')) {
-    return 'The job posting content was blocked by safety filters. Try pasting a shorter excerpt.';
+    return 'Content blocked by safety filters. Try pasting a shorter excerpt.';
   }
   if (msg.includes('RECITATION')) {
-    return 'Analysis was blocked due to content policy. Try pasting the text manually.';
+    return 'Analysis blocked due to content policy. Try pasting text manually.';
+  }
+  if (msg.includes('not set')) {
+    return 'Gemini API key is missing on the server. Contact support.';
   }
   return `AI analysis failed: ${msg}`;
 }
