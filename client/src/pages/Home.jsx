@@ -38,14 +38,14 @@ export default function Home() {
               color: '#fca5a5',
             }}
           >
-            🚨 11,000+ Indian students scammed by fake jobs in 2023
+            🚨 20,000+ Indian students scammed by fake jobs since 2024
           </motion.div>
 
           {/* headline */}
           <div>
-            <h1 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, lineHeight:1.08 }}
-              className="text-5xl md:text-6xl">
-              <BlurText text="Is this job" delay={0.1} />
+            <h1 style={{ fontFamily:'Syne,sans-serif', fontWeight:750, lineHeight:1.08 }}
+              className="text-4xl md:text-5xl">
+              <BlurText text="Is this Job" delay={0.1} />
               <br />
               <motion.span
                 initial={{ opacity:0, filter:'blur(16px)', y:14 }}
