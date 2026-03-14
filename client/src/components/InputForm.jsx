@@ -8,9 +8,9 @@ const EXAMPLE_REAL = `Software Engineer - Microsoft India
 Location: Hyderabad, India | Salary: 20-25 LPA
 Experience: 3+ years in React and Node.js
 
-We are looking for a skilled Software Engineer to join our Azure team. You will build scalable web applications and collaborate with cross-functional teams.
+We are looking for a skilled Software Engineer to join our Azure team.
 
-Requirements: B.Tech/M.Tech in CS or related field, strong knowledge of JavaScript, TypeScript, React. 
+Requirements: B.Tech/M.Tech in CS or related field, strong knowledge of JavaScript, TypeScript, React.
 
 Apply at: careers.microsoft.com
 Contact: india-careers@microsoft.com
@@ -40,56 +40,67 @@ export default function InputForm({ onSubmit, error }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.4, ease: [.22,1,.36,1] }}
-      className="glass-card-solid rounded-3xl overflow-hidden"
+      initial={{ opacity:0, y:28 }}
+      animate={{ opacity:1, y:0 }}
+      transition={{ duration:.6, delay:.4, ease:[.22,1,.36,1] }}
+      className="glass-card-solid"
       style={{
+        borderRadius:24, overflow:'hidden',
         boxShadow: focused
-          ? '0 0 0 1px rgba(124,58,237,.4), 0 0 80px rgba(124,58,237,.15), 0 32px 64px rgba(0,0,0,.6)'
-          : '0 0 0 1px rgba(255,255,255,.06), 0 32px 64px rgba(0,0,0,.5)',
-        transition: 'box-shadow .4s ease',
+          ? '0 0 0 1px rgba(124,58,237,.4), 0 0 60px rgba(124,58,237,.14), 0 24px 56px rgba(0,0,0,.55)'
+          : '0 0 0 1px rgba(255,255,255,.06), 0 24px 56px rgba(0,0,0,.45)',
+        transition:'box-shadow .4s ease',
       }}
     >
       {/* Top gradient line */}
-      <div className="h-px w-full" style={{
-        background: 'linear-gradient(90deg, transparent, rgba(124,58,237,.6), rgba(6,182,212,.4), transparent)'
+      <div style={{
+        height:1, width:'100%',
+        background:'linear-gradient(90deg,transparent,rgba(124,58,237,.6),rgba(6,182,212,.4),transparent)'
       }} />
 
-      <div className="p-6 md:p-8 space-y-6">
-        {/* Tab switcher */}
-        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: 'rgba(255,255,255,.04)' }}>
+      <div style={{ padding:'clamp(1.25rem, 4vw, 2rem)', display:'flex', flexDirection:'column', gap:'1.25rem' }}>
+
+        {/* Tabs */}
+        <div style={{ display:'flex', gap:6, padding:4, borderRadius:16, background:'rgba(255,255,255,.04)' }}>
           {[
-            { id: 'text', Icon: FileText, label: 'Paste Text' },
-            { id: 'url',  Icon: Globe,    label: 'Paste URL'  },
+            { id:'text', Icon:FileText, label:'Paste Text' },
+            { id:'url',  Icon:Globe,    label:'Paste URL'  },
           ].map(({ id, Icon, label }) => (
             <button
               key={id}
               onClick={() => setTab(id)}
-              className="relative flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-sm font-medium transition-all duration-300"
-              style={{ color: tab === id ? '#fff' : 'rgba(148,163,184,.7)' }}
+              style={{
+                position:'relative', flex:1,
+                display:'flex', alignItems:'center', justifyContent:'center', gap:6,
+                padding:'10px 8px', borderRadius:12,
+                fontSize:13, fontWeight:500, cursor:'pointer',
+                color: tab===id ? '#fff' : 'rgba(148,163,184,.75)',
+                background:'transparent', border:'none',
+                transition:'color .2s',
+              }}
             >
-              {tab === id && (
+              {tab===id && (
                 <motion.div
                   layoutId="tab-bg"
-                  className="absolute inset-0 rounded-xl tab-indicator"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  className="tab-indicator"
+                  style={{ position:'absolute', inset:0, borderRadius:12 }}
+                  transition={{ type:'spring', stiffness:400, damping:30 }}
                 />
               )}
-              <Icon size={14} className="relative z-10" />
-              <span className="relative z-10">{label}</span>
+              <Icon size={14} style={{ position:'relative', zIndex:1, flexShrink:0 }} />
+              <span style={{ position:'relative', zIndex:1 }}>{label}</span>
             </button>
           ))}
         </div>
 
-        {/* Input */}
-        <form onSubmit={submit} className="space-y-4">
+        {/* Input form */}
+        <form onSubmit={submit} style={{ display:'flex', flexDirection:'column', gap:'0.875rem' }}>
           <AnimatePresence mode="wait">
             {tab === 'url' ? (
               <motion.div key="url"
-                initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }} transition={{ duration: .2 }}
-                className="space-y-2"
+                initial={{ opacity:0, x:-10 }} animate={{ opacity:1, x:0 }}
+                exit={{ opacity:0, x:10 }} transition={{ duration:.2 }}
+                style={{ display:'flex', flexDirection:'column', gap:8 }}
               >
                 <input
                   type="url" value={url}
@@ -98,41 +109,49 @@ export default function InputForm({ onSubmit, error }) {
                   onBlur={() => setFocus(false)}
                   placeholder="https://naukri.com/job-listings/..."
                   className="input-glass"
-                  style={{ padding: '14px 18px' }}
+                  style={{ padding:'13px 16px' }}
                 />
-                <div className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-xs"
-                  style={{ background: 'rgba(245,158,11,.06)', border: '1px solid rgba(245,158,11,.18)', color: 'rgba(251,191,36,.85)' }}>
-                  <Info size={12} className="mt-0.5 shrink-0" />
-                  Works with <strong>Naukri, Internshala, Indeed</strong>. LinkedIn blocks scraping — use Paste Text instead.
+                <div style={{
+                  display:'flex', alignItems:'flex-start', gap:8,
+                  padding:'10px 12px', borderRadius:12,
+                  background:'rgba(245,158,11,.06)', border:'1px solid rgba(245,158,11,.18)',
+                  color:'rgba(251,191,36,.85)', fontSize:12, lineHeight:1.5,
+                }}>
+                  <Info size={12} style={{ marginTop:1, flexShrink:0 }} />
+                  <span>Works with <strong>Naukri, Internshala, Indeed</strong>. LinkedIn blocks scraping — use Paste Text instead.</span>
                 </div>
               </motion.div>
             ) : (
               <motion.div key="text"
-                initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }} transition={{ duration: .2 }}
+                initial={{ opacity:0, x:10 }} animate={{ opacity:1, x:0 }}
+                exit={{ opacity:0, x:-10 }} transition={{ duration:.2 }}
               >
-                <div className="relative">
+                <div style={{ position:'relative' }}>
                   <textarea
                     value={text}
                     onChange={e => setText(e.target.value)}
                     onFocus={() => setFocus(true)}
                     onBlur={() => setFocus(false)}
-                    placeholder="Paste the full job description here — title, company, salary, contact details, requirements, everything..."
-                    rows={7}
+                    placeholder="Paste the full job description here — title, company, salary, contact details, requirements..."
+                    rows={6}
                     className="input-glass"
-                    style={{ padding: '16px 18px' }}
+                    style={{ padding:'14px 16px', paddingRight: text ? 40 : 16 }}
                   />
                   {text && (
                     <button type="button" onClick={() => setText('')}
-                      className="absolute top-3 right-3 p-1 rounded-lg transition-colors"
-                      style={{ color: 'rgba(148,163,184,.5)', background: 'rgba(255,255,255,.06)' }}>
-                      <X size={14} />
+                      style={{
+                        position:'absolute', top:10, right:10,
+                        padding:5, borderRadius:8, cursor:'pointer',
+                        color:'rgba(148,163,184,.5)', background:'rgba(255,255,255,.07)',
+                        border:'none', display:'flex', alignItems:'center',
+                      }}>
+                      <X size={13} />
                     </button>
                   )}
                 </div>
-                <div className="flex justify-between mt-2 px-0.5">
-                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Min. 50 characters needed</span>
-                  <span className="tabular-nums" style={{ fontSize: 12, color: text.length > 5500 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                <div style={{ display:'flex', justifyContent:'space-between', marginTop:6, padding:'0 2px' }}>
+                  <span style={{ fontSize:11, color:'var(--text-muted)' }}>Min. 50 characters</span>
+                  <span style={{ fontSize:11, color: text.length>5500 ? 'var(--danger)':'var(--text-muted)' }}>
                     {text.length}/6000
                   </span>
                 </div>
@@ -144,60 +163,71 @@ export default function InputForm({ onSubmit, error }) {
           <AnimatePresence>
             {error && (
               <motion.div
-                initial={{ opacity: 0, y: -8, scale: .97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8 }}
-                className="flex items-start gap-3 rounded-2xl p-4 text-sm"
-                style={{ background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.22)', color: '#fca5a5' }}
+                initial={{ opacity:0, y:-8 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0, y:-8 }}
+                style={{
+                  display:'flex', alignItems:'flex-start', gap:10,
+                  padding:'12px 14px', borderRadius:16, fontSize:13,
+                  background:'rgba(239,68,68,.08)', border:'1px solid rgba(239,68,68,.22)',
+                  color:'#fca5a5', lineHeight:1.5,
+                }}
               >
-                <AlertCircle size={15} className="mt-0.5 shrink-0" />
-                {error}
+                <AlertCircle size={14} style={{ marginTop:1, flexShrink:0 }} />
+                <span>{error}</span>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Submit */}
+          {/* Submit button */}
           <motion.button
             type="submit" disabled={!valid}
-            whileHover={valid ? { scale: 1.01, y: -2 } : {}}
-            whileTap={valid ? { scale: .99 } : {}}
-            className="w-full py-4 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 relative overflow-hidden"
+            whileHover={valid ? { scale:1.01, y:-2 } : {}}
+            whileTap={valid ? { scale:.99 } : {}}
             style={{
+              width:'100%', padding:'14px 20px',
+              borderRadius:18, fontWeight:600, fontSize:14,
+              display:'flex', alignItems:'center', justifyContent:'center', gap:8,
+              position:'relative', overflow:'hidden', cursor: valid?'pointer':'not-allowed',
               background: valid
-                ? 'linear-gradient(135deg, #7c3aed 0%, #2563eb 60%, #06b6d4 100%)'
+                ? 'linear-gradient(135deg,#7c3aed 0%,#2563eb 60%,#06b6d4 100%)'
                 : 'rgba(255,255,255,.05)',
-              color: valid ? '#fff' : 'rgba(148,163,184,.4)',
-              cursor: valid ? 'pointer' : 'not-allowed',
-              border: valid ? 'none' : '1px solid rgba(255,255,255,.08)',
-              boxShadow: valid ? '0 0 0 1px rgba(124,58,237,.5), 0 4px 30px rgba(124,58,237,.4)' : 'none',
-              transition: 'all .3s ease',
-              letterSpacing: '.02em',
+              color: valid ? '#fff':'rgba(148,163,184,.4)',
+              border: valid ? 'none':'1px solid rgba(255,255,255,.08)',
+              boxShadow: valid ? '0 0 0 1px rgba(124,58,237,.5), 0 4px 28px rgba(124,58,237,.4)':'none',
+              transition:'all .3s ease', letterSpacing:'.02em',
             }}
           >
             {valid && (
               <motion.div
-                className="absolute inset-0"
-                style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent)' }}
-                animate={{ x: ['-100%', '200%'] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 1.5 }}
+                style={{
+                  position:'absolute', inset:0,
+                  background:'linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent)',
+                }}
+                animate={{ x:['-100%','200%'] }}
+                transition={{ duration:2.5, repeat:Infinity, ease:'linear', repeatDelay:1.5 }}
               />
             )}
-            <Zap size={15} className="relative z-10" />
-            <span className="relative z-10">Analyze Job Posting</span>
+            <Zap size={15} style={{ position:'relative', zIndex:1 }} />
+            <span style={{ position:'relative', zIndex:1 }}>Analyze Job Posting</span>
           </motion.button>
         </form>
 
         {/* Example buttons */}
-        <div className="flex items-center gap-3 pt-1">
-          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Try example:</span>
+        <div style={{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:8 }}>
+          <span style={{ fontSize:12, color:'var(--text-muted)' }}>Try:</span>
           <button onClick={() => loadExample('fake')}
-            className="text-xs px-3 py-1.5 rounded-lg transition-all"
-            style={{ background: 'rgba(239,68,68,.08)', border: '1px solid rgba(239,68,68,.2)', color: '#f87171' }}>
+            style={{
+              padding:'6px 12px', borderRadius:10, cursor:'pointer',
+              background:'rgba(239,68,68,.08)', border:'1px solid rgba(239,68,68,.2)',
+              color:'#f87171', fontSize:12, fontWeight:500,
+            }}>
             🚨 Fake Job
           </button>
           <button onClick={() => loadExample('real')}
-            className="text-xs px-3 py-1.5 rounded-lg transition-all"
-            style={{ background: 'rgba(16,185,129,.08)', border: '1px solid rgba(16,185,129,.2)', color: '#34d399' }}>
+            style={{
+              padding:'6px 12px', borderRadius:10, cursor:'pointer',
+              background:'rgba(16,185,129,.08)', border:'1px solid rgba(16,185,129,.2)',
+              color:'#34d399', fontSize:12, fontWeight:500,
+            }}>
             ✅ Real Job
           </button>
         </div>

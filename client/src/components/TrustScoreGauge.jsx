@@ -2,83 +2,88 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
 const CFG = {
-  SAFE:        { color: '#10b981', label: 'Safe',        emoji: '✅', glow: 'rgba(16,185,129,.6)',  bg: 'rgba(16,185,129,.08)'  },
-  SUSPICIOUS:  { color: '#f59e0b', label: 'Suspicious',  emoji: '⚠️', glow: 'rgba(245,158,11,.6)', bg: 'rgba(245,158,11,.08)' },
-  LIKELY_FAKE: { color: '#ef4444', label: 'Likely Fake', emoji: '🚨', glow: 'rgba(239,68,68,.6)',  bg: 'rgba(239,68,68,.08)'  },
+  SAFE:        { color:'#10b981', label:'Safe',        emoji:'✅', glow:'rgba(16,185,129,.6)',  bg:'rgba(16,185,129,.08)'  },
+  SUSPICIOUS:  { color:'#f59e0b', label:'Suspicious',  emoji:'⚠️', glow:'rgba(245,158,11,.6)', bg:'rgba(245,158,11,.08)' },
+  LIKELY_FAKE: { color:'#ef4444', label:'Likely Fake', emoji:'🚨', glow:'rgba(239,68,68,.6)',  bg:'rgba(239,68,68,.08)'  },
 };
 
 export default function TrustScoreGauge({ score, verdict }) {
   const [n, setN] = useState(0);
   const c = CFG[verdict] || CFG.SUSPICIOUS;
-  const R = 64, C = 2 * Math.PI * R;
+  const size = 160; // Consistent size, responsive via container
+  const R = 60, C = 2 * Math.PI * R;
 
   useEffect(() => {
-    const t0 = performance.now(), dur = 2000;
+    const t0 = performance.now(), dur = 1800;
     const tick = now => {
-      const p = Math.min((now - t0) / dur, 1);
-      const e = 1 - Math.pow(1 - p, 4);
-      setN(Math.round(e * score));
+      const p = Math.min((now-t0)/dur, 1);
+      const e = 1 - Math.pow(1-p, 4);
+      setN(Math.round(e*score));
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   }, [score]);
 
   return (
-    <div className="flex flex-col items-center gap-5 shrink-0">
-      <div className="relative w-48 h-48">
-        {/* Animated glow */}
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:16, flexShrink:0 }}>
+      {/* Gauge */}
+      <div style={{ position:'relative', width:size, height:size }}>
+        {/* Glow */}
         <motion.div
-          className="absolute inset-0 rounded-full"
-          animate={{ opacity: [.4, .8, .4], scale: [1, 1.04, 1] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ boxShadow: `0 0 80px ${c.glow}, 0 0 160px ${c.glow.replace('.6', '.2')}` }}
+          animate={{ opacity:[.35,.7,.35], scale:[1,1.03,1] }}
+          transition={{ duration:3, repeat:Infinity, ease:'easeInOut' }}
+          style={{
+            position:'absolute', inset:0, borderRadius:'50%',
+            boxShadow:`0 0 60px ${c.glow}, 0 0 120px ${c.glow.replace('.6','.2')}`,
+          }}
         />
+        {/* Inner rings */}
+        <div style={{ position:'absolute', inset:8, borderRadius:'50%', border:`1px solid ${c.color}18` }} />
+        <div style={{ position:'absolute', inset:16, borderRadius:'50%', border:`1px solid ${c.color}10` }} />
 
-        {/* Decorative rings */}
-        <div className="absolute inset-3 rounded-full" style={{ border: `1px solid ${c.color}18` }} />
-        <div className="absolute inset-6 rounded-full" style={{ border: `1px solid ${c.color}10` }} />
-
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 144 144">
-          {/* Track */}
-          <circle cx="72" cy="72" r={R} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="8" />
-          {/* Background arc */}
-          <circle cx="72" cy="72" r={R} fill="none" stroke={`${c.color}20`} strokeWidth="8"
+        <svg
+          style={{ width:'100%', height:'100%', transform:'rotate(-90deg)' }}
+          viewBox="0 0 136 136"
+        >
+          <circle cx="68" cy="68" r={R} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="8" />
+          <circle cx="68" cy="68" r={R} fill="none" stroke={`${c.color}20`} strokeWidth="8"
             strokeDasharray={C} strokeDashoffset="0" strokeLinecap="round" />
-          {/* Progress */}
-          <motion.circle cx="72" cy="72" r={R} fill="none"
+          <motion.circle cx="68" cy="68" r={R} fill="none"
             stroke={c.color} strokeWidth="8" strokeLinecap="round"
             strokeDasharray={C}
-            initial={{ strokeDashoffset: C }}
-            animate={{ strokeDashoffset: C - (n / 100) * C }}
-            transition={{ duration: 0.016 }}
-            style={{ filter: `drop-shadow(0 0 10px ${c.color}) drop-shadow(0 0 20px ${c.color}80)` }}
+            initial={{ strokeDashoffset:C }}
+            animate={{ strokeDashoffset: C - (n/100)*C }}
+            transition={{ duration:.016 }}
+            style={{ filter:`drop-shadow(0 0 8px ${c.color}) drop-shadow(0 0 16px ${c.color}80)` }}
           />
         </svg>
 
         {/* Center */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <motion.span
-            className="text-5xl font-black tabular-nums"
-            style={{ color: c.color, textShadow: `0 0 30px ${c.glow}`, letterSpacing: '-2px' }}
-          >
+        <div style={{
+          position:'absolute', inset:0,
+          display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+        }}>
+          <span style={{
+            fontSize:42, fontWeight:900, letterSpacing:'-2px', color:c.color,
+            textShadow:`0 0 25px ${c.glow}`, lineHeight:1,
+          }}>
             {n}
-          </motion.span>
-          <span className="text-xs font-medium mt-0.5" style={{ color: 'rgba(148,163,184,.5)' }}>/ 100</span>
+          </span>
+          <span style={{ fontSize:11, color:'rgba(148,163,184,.5)', marginTop:2 }}>/ 100</span>
         </div>
       </div>
 
       {/* Verdict pill */}
       <motion.div
-        initial={{ scale: 0, opacity: 0, y: 8 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ delay: 0.7, type: 'spring', stiffness: 260, damping: 20 }}
-        className="flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm"
+        initial={{ scale:0, opacity:0 }}
+        animate={{ scale:1, opacity:1 }}
+        transition={{ delay:.6, type:'spring', stiffness:260, damping:20 }}
         style={{
-          background: c.bg,
-          border: `1px solid ${c.color}35`,
-          color: c.color,
-          boxShadow: `0 0 30px ${c.glow.replace('.6', '.3')}`,
-          letterSpacing: '.04em',
+          display:'flex', alignItems:'center', gap:6,
+          padding:'8px 20px', borderRadius:999, fontWeight:700, fontSize:13,
+          background:c.bg, border:`1px solid ${c.color}35`, color:c.color,
+          boxShadow:`0 0 24px ${c.glow.replace('.6','.3')}`,
+          letterSpacing:'.04em', whiteSpace:'nowrap',
         }}
       >
         <span>{c.emoji}</span>
