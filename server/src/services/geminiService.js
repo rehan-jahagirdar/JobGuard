@@ -4,19 +4,28 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { existsSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-dotenv.config({ path: join(__dirname, '../../.env') });
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Only load .env in development — Railway injects vars directly
+// Loading .env on Railway overwrites injected vars with undefined
+const envPath = join(__dirname, '../../.env');
+if (existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+  console.log('Gemini: loaded .env file (development)');
+} else {
+  console.log('Gemini: using Railway environment variables (production)');
+}
 
-console.log('Gemini Key loaded:', process.env.GEMINI_API_KEY ?
-  process.env.GEMINI_API_KEY.slice(0, 8) + '...' : '❌ NOT FOUND');
+const apiKey = process.env.GEMINI_API_KEY;
+console.log('Gemini Key:', apiKey ? apiKey.slice(0, 8) + '...' : '❌ NOT FOUND');
 
-// ✅ gemini-1.5-flash is the correct model name
+const genAI = new GoogleGenerativeAI(apiKey);
+
 const model = genAI.getGenerativeModel({
-  model: 'gemini-3-flash-preview',  // ✅ correct model name
+  model: 'gemini-3-flash-preview',
   generationConfig: {
     responseMimeType: 'application/json',
     temperature: 0.2,
@@ -93,7 +102,6 @@ ${jobText}`;
     return parsed;
 
   } catch (err) {
-    // Print the RAW error so we can see exactly what Gemini says
     console.error('FULL GEMINI ERROR:', err.message);
     throw new Error(interpretGeminiError(err));
   }
@@ -117,5 +125,5 @@ export function interpretGeminiError(err) {
   if (msg.includes('RECITATION')) {
     return 'Analysis was blocked due to content policy. Try pasting the text manually.';
   }
-  return `AI analysis failed: ${msg}`;  // ← shows raw error now
+  return `AI analysis failed: ${msg}`;
 }
