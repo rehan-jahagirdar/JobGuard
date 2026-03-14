@@ -5,16 +5,7 @@ if (!admin.apps.length) {
 
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-    
-    // Debug — see what the key looks like
-    console.log('Private key first 60 chars:', serviceAccount.private_key?.slice(0, 60));
-    console.log('Private key includes \\n:', serviceAccount.private_key?.includes('\\n'));
-    console.log('Private key includes newline:', serviceAccount.private_key?.includes('\n'));
-
-    // Force fix the key
-    serviceAccount.private_key = serviceAccount.private_key
-      ?.replace(/\\n/g, '\n');
-
+    // ✅ Key already has real newlines — DO NOT replace anything
     credential = admin.credential.cert(serviceAccount);
     console.log('Firebase: using FIREBASE_SERVICE_ACCOUNT ✅');
   } else {
