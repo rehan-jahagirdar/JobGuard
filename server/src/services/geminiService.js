@@ -43,24 +43,21 @@ Flag category meanings:
 - CONTACT: Only WhatsApp or personal Gmail, no official email, no company address
 - URGENCY: Apply within 24 hours, limited seats, artificial pressure language
 - COMPANY: Unknown company, no verifiable online presence mentioned in posting
-- LANGUAGE: Poor grammar, excessive capital letters, emoji overuse, unprofessional tone`;
+- LANGUAGE: Poor grammar, excessive capital letters, emoji overuse, unprofessional tone
+
+IMPORTANT: Return ONLY the JSON object. No markdown, no backticks, no explanation outside the JSON.`;
 
 export async function analyzeWithGemini(jobText) {
-
-  // ✅ Read key at function call time — NOT at module load time
-  // This is critical for Railway — env vars aren't available at import time
   const apiKey = process.env.GEMINI_API_KEY;
 
   console.log('=== GEMINI DEBUG ===');
-  console.log('API Key found:', apiKey ? '✅ ' + apiKey.slice(0, 8) + '...' : '❌ NOT FOUND');
-  console.log('NODE_ENV:', process.env.NODE_ENV);
+  console.log('API Key:', apiKey ? apiKey.slice(0, 8) + '...' : '❌ NOT FOUND');
   console.log('===================');
 
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY environment variable is not set on Railway.');
+    throw new Error('GEMINI_API_KEY environment variable is not set.');
   }
 
-  // Create fresh client every call — guarantees latest env var value
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const model = genAI.getGenerativeModel({
@@ -68,7 +65,7 @@ export async function analyzeWithGemini(jobText) {
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: 0.2,
-      maxOutputTokens: 1500,
+      maxOutputTokens: 2000,
     }
   });
 
@@ -82,17 +79,46 @@ ${jobText}`;
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
-    const parsed = JSON.parse(responseText);
+    console.log('Gemini response length:', responseText.length);
+    console.log('Gemini response preview:', responseText.slice(0, 100));
 
+    // Clean response — remove markdown fences if present
+    let cleaned = responseText
+      .replace(/```json\n?/g, '')
+      .replace(/```\n?/g, '')
+      .trim();
+
+    // Extract just the JSON object
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace  = cleaned.lastIndexOf('}');
+
+    if (firstBrace === -1 || lastBrace === -1) {
+      throw new Error('No JSON found in Gemini response');
+    }
+
+    cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+
+    const parsed = JSON.parse(cleaned);
+
+    // Validate required fields
     if (
       typeof parsed.trustScore !== 'number' ||
       !['SAFE', 'SUSPICIOUS', 'LIKELY_FAKE'].includes(parsed.verdict) ||
       !Array.isArray(parsed.flags)
     ) {
-      throw new Error('Gemini returned an unexpected response structure');
+      throw new Error('Gemini returned unexpected response structure');
     }
 
+    // Clamp score
     parsed.trustScore = Math.max(0, Math.min(100, parsed.trustScore));
+
+    // Ensure all fields exist
+    parsed.positiveSignals    = parsed.positiveSignals    || [];
+    parsed.adviceForApplicant = parsed.adviceForApplicant || '';
+    parsed.summary            = parsed.summary            || '';
+    parsed.jobTitle           = parsed.jobTitle           || 'Unknown';
+    parsed.companyName        = parsed.companyName        || 'Unknown';
+
     return parsed;
 
   } catch (err) {
@@ -120,7 +146,10 @@ export function interpretGeminiError(err) {
     return 'Analysis blocked due to content policy. Try pasting text manually.';
   }
   if (msg.includes('not set')) {
-    return 'Gemini API key is missing on the server. Contact support.';
+    return 'Gemini API key is missing on the server.';
+  }
+  if (msg.includes('JSON') || msg.includes('Unterminated')) {
+    return 'AI returned invalid response. Please try again.';
   }
   return `AI analysis failed: ${msg}`;
 }
