@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { RotateCcw, Share2, CheckCircle, ShieldAlert, ExternalLink } from 'lucide-react';
+import { RotateCcw, Share2, CheckCircle, ShieldAlert } from 'lucide-react';
 import TrustScoreGauge from './TrustScoreGauge';
 import FlagCard from './FlagCard';
 
 const RING = { SAFE: 'ring-safe', SUSPICIOUS: 'ring-warn', LIKELY_FAKE: 'ring-danger' };
+
+const safeStr = (val) => {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (typeof val === 'object') return JSON.stringify(val);
+  return String(val);
+};
 
 export default function ResultCard({ result, onReset }) {
   const [copied, setCopied] = useState(false);
@@ -19,16 +26,16 @@ export default function ResultCard({ result, onReset }) {
     (a, b) => ({ high: 0, medium: 1, low: 2 }[a.severity] - { high: 0, medium: 1, low: 2 }[b.severity])
   );
 
-  const highCount   = flags.filter(f => f.severity === 'high').length;
-  const medCount    = flags.filter(f => f.severity === 'medium').length;
-  const lowCount    = flags.filter(f => f.severity === 'low').length;
+  const highCount = flags.filter(f => f.severity === 'high').length;
+  const medCount  = flags.filter(f => f.severity === 'medium').length;
+  const lowCount  = flags.filter(f => f.severity === 'low').length;
 
   return (
     <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }}
       transition={{ duration: .5 }} className="space-y-4">
 
       {/* ── main card ── */}
-      <div className={`glass-hi rounded-3xl p-6 md:p-8 ${RING[result.verdict]}`}>
+      <div className={`glass-hi rounded-3xl p-6 md:p-8 ${RING[result.verdict] || ''}`}>
         <div className="flex flex-col md:flex-row gap-8 items-center">
           <TrustScoreGauge score={result.trustScore} verdict={result.verdict} />
 
@@ -36,16 +43,18 @@ export default function ResultCard({ result, onReset }) {
             <motion.div initial={{ opacity:0,y:10 }} animate={{ opacity:1,y:0 }} transition={{ delay:.2 }}>
               <h2 className="text-2xl font-bold leading-tight"
                 style={{ fontFamily:'Syne,sans-serif' }}>
-                {result.jobTitle || 'Job Posting Analysis'}
+                {safeStr(result.jobTitle) || 'Job Posting Analysis'}
               </h2>
               {result.companyName && result.companyName !== 'Unknown' && (
-                <p className="mt-1 text-sm" style={{ color:'var(--muted)' }}>{result.companyName}</p>
+                <p className="mt-1 text-sm" style={{ color:'var(--muted)' }}>
+                  {safeStr(result.companyName)}
+                </p>
               )}
             </motion.div>
 
             <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:.3 }}
               className="text-sm leading-relaxed" style={{ color:'rgba(237,233,255,.72)' }}>
-              {result.summary}
+              {safeStr(result.summary)}
             </motion.p>
 
             {/* severity summary bar */}
@@ -85,7 +94,7 @@ export default function ResultCard({ result, onReset }) {
                 {result.domainCheck.exists ? '✅' : '❌'}
                 {result.domainCheck.exists
                   ? `Website found (${result.domainCheck.domainGuess})`
-                  : `No website found for "${result.companyName}"`}
+                  : `No website found for "${safeStr(result.companyName)}"`}
               </motion.div>
             )}
 
@@ -96,7 +105,7 @@ export default function ResultCard({ result, onReset }) {
                 style={{ background:'rgba(139,92,246,.08)', border:'1px solid rgba(139,92,246,.2)' }}>
                 <p className="text-sm leading-relaxed" style={{ color:'rgba(237,233,255,.82)' }}>
                   💡 <strong style={{ color:'#a78bfa' }}>Advice: </strong>
-                  {result.adviceForApplicant}
+                  {safeStr(result.adviceForApplicant)}
                 </p>
               </motion.div>
             )}
@@ -110,7 +119,8 @@ export default function ResultCard({ result, onReset }) {
           className="space-y-3">
           <div className="flex items-center gap-2 px-1">
             <ShieldAlert size={14} style={{ color:'var(--danger)' }} />
-            <h3 className="text-sm font-semibold" style={{ color:'var(--muted)', fontFamily:'Syne,sans-serif' }}>
+            <h3 className="text-sm font-semibold"
+              style={{ color:'var(--muted)', fontFamily:'Syne,sans-serif' }}>
               Red Flags Detected ({flags.length})
             </h3>
           </div>
@@ -125,14 +135,17 @@ export default function ResultCard({ result, onReset }) {
           style={{ background:'rgba(16,185,129,.05)', border:'1px solid rgba(16,185,129,.15)' }}>
           <div className="flex items-center gap-2">
             <CheckCircle size={14} style={{ color:'var(--safe)' }} />
-            <h3 className="text-sm font-semibold" style={{ color:'#34d399', fontFamily:'Syne,sans-serif' }}>
+            <h3 className="text-sm font-semibold"
+              style={{ color:'#34d399', fontFamily:'Syne,sans-serif' }}>
               Legitimate Signals
             </h3>
           </div>
           <ul className="space-y-1.5">
             {result.positiveSignals.map((sig, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm" style={{ color:'var(--muted)' }}>
-                <span style={{ color:'var(--safe)' }} className="mt-0.5 shrink-0">✓</span>{sig}
+              <li key={i} className="flex items-start gap-2 text-sm"
+                style={{ color:'var(--muted)' }}>
+                <span style={{ color:'var(--safe)' }} className="mt-0.5 shrink-0">✓</span>
+                {safeStr(sig)}
               </li>
             ))}
           </ul>

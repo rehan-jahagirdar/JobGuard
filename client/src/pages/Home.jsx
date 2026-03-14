@@ -52,7 +52,7 @@ export default function Home() {
                 animate={{ opacity:1, filter:'blur(0px)', y:0 }}
                 transition={{ duration:.6, delay:.44, ease:[.22,1,.36,1] }}
                 className="shimmer-text"
-                style={{ display:'inline-block', paddingBottom:'.1em', lineHeight:1.15 }}
+                style={{ display:'inline-block', paddingBottom:'.1em', lineHeight:1.08 }}
               >
                 posting real?
               </motion.span>
