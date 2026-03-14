@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://job-guard-flame.vercel.app',
+    'https://jobguard-ai.vercel.app',
   ],
   credentials: true
 }));
@@ -38,5 +38,5 @@ app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`JobGuard server running on port ${PORT}`);
-  console.log(`Allowed origins: localhost:5173, job-guard-flame.vercel.app`);
+  console.log(`Allowed origins: localhost:5173, jobguard-ai.vercel.app`);
 });
