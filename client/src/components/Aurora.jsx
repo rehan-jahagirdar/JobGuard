@@ -1,13 +1,13 @@
 export default function Aurora() {
   return (
     <>
-      <div className="aurora">
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-        <div className="orb orb-3" />
-        <div className="orb orb-4" />
+      <div className="aurora-wrap">
+        <div className="aurora-orb o1" />
+        <div className="aurora-orb o2" />
+        <div className="aurora-orb o3" />
+        <div className="aurora-orb o4" />
       </div>
-      <div className="dot-grid" />
+      <div className="grid-bg" />
     </>
   );
 }

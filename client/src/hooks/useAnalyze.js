@@ -15,7 +15,7 @@ export function useAnalyze() {
     try {
       if (type === 'url') {
         setStep('fetching');
-        await new Promise(r => setTimeout(r, 600));
+        await new Promise(r => setTimeout(r, 700));
       }
       setStep('analyzing');
       const data = await analyzePosting({ type, content });
@@ -29,11 +29,7 @@ export function useAnalyze() {
     }
   };
 
-  const reset = () => {
-    setResult(null);
-    setError(null);
-    setStep('idle');
-  };
+  const reset = () => { setResult(null); setError(null); setStep('idle'); };
 
   return { result, loading, error, step, analyze, reset };
 }

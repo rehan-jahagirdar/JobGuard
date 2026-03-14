@@ -6,9 +6,16 @@ import ResultCard from '../components/ResultCard';
 import { useAnalyze } from '../hooks/useAnalyze';
 
 const STATS = [
-  { value:'11,000+', label:'Fraud cases in 2023' },
-  { value:'₹crores', label:'Lost to fake jobs'   },
-  { value:'10 sec',  label:'To detect a scam'    },
+  { value: '11,000+', label: 'Fraud cases in 2023', icon: '📊' },
+  { value: '₹crores', label: 'Lost to fake jobs',   icon: '💸' },
+  { value: '10 sec',  label: 'To detect a scam',    icon: '⚡' },
+];
+
+const FEATURES = [
+  { icon: '🎯', text: 'Trust Score 0–100' },
+  { icon: '🚩', text: 'Specific red flags' },
+  { icon: '🏢', text: 'Company verification' },
+  { icon: '💡', text: 'Plain-language advice' },
 ];
 
 export default function Home() {
@@ -16,88 +23,106 @@ export default function Home() {
 
   return (
     <div className="relative z-10 max-w-2xl mx-auto px-4 py-10 space-y-10">
-      {!result && !loading && (
-        <div className="text-center space-y-7">
 
-          {/* Badge */}
+      {!result && !loading && (
+        <div className="text-center space-y-8">
+
+          {/* top badge */}
           <motion.div
-            initial={{opacity:0,y:-12}} animate={{opacity:1,y:0}} transition={{duration:.5}}
+            initial={{ opacity:0, y:-14 }} animate={{ opacity:1, y:0 }}
+            transition={{ duration:.5 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium"
             style={{
-              background:'rgba(245,86,74,.08)',
-              border:'1px solid rgba(245,86,74,.2)',
-              color:'#fca5a5',
-              fontFamily:'DM Sans,sans-serif',
-            }}>
+              background: 'rgba(239,68,68,.08)',
+              border: '1px solid rgba(239,68,68,.2)',
+              color: '#fca5a5',
+            }}
+          >
             🚨 11,000+ Indian students scammed by fake jobs in 2023
           </motion.div>
 
-          {/* Headline */}
-          <h1 style={{fontFamily:'Syne,sans-serif',fontWeight:800,lineHeight:1.1}}
-            className="text-5xl md:text-6xl">
-            <BlurText text="Is this job" delay={0.1} />
-            <br />
-            <motion.span
-              initial={{opacity:0,filter:'blur(14px)',y:12}}
-              animate={{opacity:1,filter:'blur(0px)',y:0}}
-              transition={{duration:.6,delay:.42,ease:[.22,1,.36,1]}}
-              style={{
-                display:'inline-block',
-                backgroundImage:'linear-gradient(135deg,#a78bfa 0%,#36b8f5 100%)',
-                WebkitBackgroundClip:'text',
-                WebkitTextFillColor:'transparent',
-                backgroundClip:'text',
-                paddingBottom:'.12em',
-                lineHeight:1.15,
-              }}>
-              posting real?
-            </motion.span>
-          </h1>
+          {/* headline */}
+          <div>
+            <h1 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, lineHeight:1.08 }}
+              className="text-5xl md:text-6xl">
+              <BlurText text="Is this job" delay={0.1} />
+              <br />
+              <motion.span
+                initial={{ opacity:0, filter:'blur(16px)', y:14 }}
+                animate={{ opacity:1, filter:'blur(0px)', y:0 }}
+                transition={{ duration:.6, delay:.44, ease:[.22,1,.36,1] }}
+                className="shimmer-text"
+                style={{ display:'inline-block', paddingBottom:'.1em', lineHeight:1.15 }}
+              >
+                posting real?
+              </motion.span>
+            </h1>
+          </div>
 
-          {/* Subtitle */}
+          {/* subtitle */}
           <motion.p
-            initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.65}}
+            initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+            transition={{ delay:.68 }}
             className="text-base max-w-md mx-auto leading-relaxed"
-            style={{color:'var(--muted)'}}>
-            Paste any job URL or description. Gemini AI analyzes it in seconds and tells
-            you <em>exactly</em> why it might be a scam — specific red flags, not vague warnings.
+            style={{ color:'var(--muted)' }}
+          >
+            Paste any job URL or description. Gemini AI analyzes it in seconds and
+            tells you <em>exactly</em> why it might be a scam — specific red flags, not vague warnings.
           </motion.p>
 
-          {/* Stats */}
+          {/* feature pills */}
           <motion.div
-            initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:.75}}
-            className="flex items-center justify-center gap-10 pt-1">
-            {STATS.map((s,i) => (
-              <div key={i} className="text-center">
-                <p className="text-lg font-bold" style={{fontFamily:'Syne,sans-serif'}}>{s.value}</p>
-                <p className="text-xs mt-0.5" style={{color:'var(--muted)'}}>{s.label}</p>
-              </div>
+            initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+            transition={{ delay:.76 }}
+            className="flex flex-wrap items-center justify-center gap-2"
+          >
+            {FEATURES.map((f, i) => (
+              <span key={i}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+                style={{
+                  background: 'var(--glass)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--muted)',
+                  backdropFilter: 'blur(12px)',
+                }}>
+                {f.icon} {f.text}
+              </span>
             ))}
           </motion.div>
 
-          {/* Powered by badge */}
+          {/* stats */}
           <motion.div
-            initial={{opacity:0}} animate={{opacity:1}} transition={{delay:.9}}
+            initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+            transition={{ delay:.82 }}
+            className="flex items-center justify-center gap-10 py-2"
+          >
+            {STATS.map((s, i) => (
+              <motion.div key={i} className="text-center"
+                whileHover={{ scale:1.05 }} transition={{ type:'spring', stiffness:300 }}>
+                <p className="text-xl font-bold" style={{ fontFamily:'Syne,sans-serif' }}>
+                  {s.icon} {s.value}
+                </p>
+                <p className="text-xs mt-0.5" style={{ color:'var(--faint)' }}>{s.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* powered by */}
+          <motion.div
+            initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:.95 }}
             className="flex items-center justify-center gap-2 text-xs"
-            style={{color:'var(--muted)'}}>
+            style={{ color:'var(--faint)' }}
+          >
             <span>Powered by</span>
-            <span className="px-2 py-0.5 rounded-full font-medium"
-              style={{
-                background:'rgba(124,92,252,.12)',
-                border:'1px solid rgba(124,92,252,.25)',
-                color:'#a78bfa',
-              }}>
-              Google Gemini AI
-            </span>
-            <span>&</span>
-            <span className="px-2 py-0.5 rounded-full font-medium"
-              style={{
-                background:'rgba(54,184,245,.1)',
-                border:'1px solid rgba(54,184,245,.2)',
-                color:'#36b8f5',
-              }}>
-              Firebase
-            </span>
+            {[
+              { label:'Google Gemini AI', color:'rgba(139,92,246,.25)', tc:'#a78bfa', bc:'rgba(139,92,246,.12)' },
+              { label:'Firebase',          color:'rgba(34,211,238,.2)',  tc:'#67e8f9', bc:'rgba(34,211,238,.08)' },
+            ].map((b,i) => (
+              <span key={i} className="px-2.5 py-0.5 rounded-full font-medium"
+                style={{ background:b.bc, border:`1px solid ${b.color}`, color:b.tc }}>
+                {b.label}
+              </span>
+            ))}
           </motion.div>
         </div>
       )}
