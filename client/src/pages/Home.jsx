@@ -72,7 +72,7 @@ export default function Home() {
               className="hero-subtitle"
               style={{ color:'var(--text-secondary)' }}
             >
-              Paste any job URL or description. Gemini AI analyzes it instantly
+              Paste any job URL or description. Groq AI analyzes it instantly
               and reveals exactly why it might be a scam — specific red flags, not vague warnings.
             </motion.p>
 
@@ -99,7 +99,7 @@ export default function Home() {
             >
               Powered by
               {[
-                { label:'Google Gemini AI', c:'rgba(124,58,237,.22)', tc:'#a78bfa', bc:'rgba(124,58,237,.1)' },
+                { label:'Groq AI', c:'rgba(124,58,237,.22)', tc:'#a78bfa', bc:'rgba(124,58,237,.1)' },
                 { label:'Firebase',         c:'rgba(6,182,212,.18)',  tc:'#67e8f9', bc:'rgba(6,182,212,.08)' },
               ].map((b,i) => (
                 <span key={i} style={{ padding:'3px 10px', borderRadius:999, fontWeight:600, background:b.bc, border:`1px solid ${b.c}`, color:b.tc, fontSize:11 }}>

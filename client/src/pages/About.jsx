@@ -4,7 +4,7 @@ import { Shield, Zap, Database, Globe, Brain, Users, Code2, Award } from 'lucide
 const TECH_STACK = [
   { icon:'⚛️',  name:'React + Vite',    desc:'Frontend framework'         },
   { icon:'🎨',  name:'Tailwind CSS',    desc:'Utility-first styling'      },
-  { icon:'🤖',  name:'Google Gemini',   desc:'AI scam detection engine'   },
+  { icon:'🤖',  name:'Groq AI',   desc:'AI scam detection engine'   },
   { icon:'🔥',  name:'Firebase',        desc:'Database & authentication'  },
   { icon:'🟢',  name:'Node.js + Express', desc:'Backend API server'       },
   { icon:'🚀',  name:'Vercel + Railway', desc:'Deployment platform'       },
@@ -12,7 +12,7 @@ const TECH_STACK = [
 
 const HOW_IT_WORKS = [
   { step:'01', icon:Globe,    title:'Input',   desc:'Paste a job URL, description text, or upload a screenshot from WhatsApp/Telegram.' },
-  { step:'02', icon:Brain,    title:'Analyze', desc:'Gemini AI scans the content against 50+ known scam patterns and signals.' },
+  { step:'02', icon:Brain,    title:'Analyze', desc:'Groq AI scans the content against 50+ known scam patterns and signals.' },
   { step:'03', icon:Database, title:'Compare', desc:'Cross-references with our community database of previously reported scam postings.' },
   { step:'04', icon:Shield,   title:'Report',  desc:'Delivers a Trust Score, red flags breakdown, and actionable advice in seconds.' },
 ];

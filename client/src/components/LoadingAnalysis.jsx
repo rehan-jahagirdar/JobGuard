@@ -65,7 +65,7 @@ export default function LoadingAnalysis({ step: outerStep }) {
           Analyzing Job Posting...
         </h3>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-          AI is processing with Gemini
+          AI is processing with Groq
         </p>
       </div>
 
