@@ -43,8 +43,10 @@ export async function scrapeJobPosting(url) {
   }
 
   try {
-    const { data: html } = await axios.get(url, {
+    const response = await axios.get(url, {
       timeout: 12000,
+      // Tell Axios not to throw an error for 404s or 403s so we can handle them gracefully
+      validateStatus: (status) => status < 500, 
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -54,6 +56,15 @@ export async function scrapeJobPosting(url) {
       }
     });
 
+    // Handle bad status codes gracefully
+    if (response.status === 404) {
+      throw new Error('Job posting not found. The listing may have been removed or the URL is incorrect.');
+    }
+    if (response.status === 403 || response.status === 401) {
+      throw new Error('This website blocked access. Please copy the job description and use "Paste Text" instead.');
+    }
+
+    const html = response.data;
     const $ = cheerio.load(html);
 
     // Remove noise
@@ -119,23 +130,17 @@ export async function scrapeJobPosting(url) {
     return { text: jobText, sourceUrl: url };
 
   } catch (err) {
-    // Re-throw our custom errors as-is
-    if (err.message.includes('Paste Text') || err.message.includes('blocks')) {
+    // If we threw a custom error above (like the 404 message), keep it
+    if (err.message.includes('not found') || err.message.includes('Paste Text') || err.message.includes('blocks') || err.message.includes('extract')) {
       throw err;
     }
 
-    // Handle axios errors with helpful messages
+    // Handle deeper network errors
     if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND') {
       throw new Error('Could not reach this URL. Please check the link is correct and accessible.');
     }
     if (err.code === 'ETIMEDOUT' || err.code === 'ECONNABORTED') {
       throw new Error('The website took too long to respond. Please paste the job text directly using "Paste Text".');
-    }
-    if (err.response?.status === 403) {
-      throw new Error('This website blocked access. Please copy the job description and use "Paste Text" instead.');
-    }
-    if (err.response?.status === 404) {
-      throw new Error('Job posting not found. The listing may have been removed or the URL is incorrect.');
     }
 
     throw new Error('Could not fetch this URL. Please paste the job description text directly using "Paste Text".');
