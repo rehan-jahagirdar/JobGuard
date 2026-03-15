@@ -78,14 +78,15 @@ export default function About() {
           ].map((item,i) => (
             <motion.div key={i}
               initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
-              transition={{ delay:.5 + i*.08 }}
+              transition={{ delay:.5 + i*.08, type:'spring', stiffness:280, damping:20 }}
               className="glass-card"
               style={{ borderRadius:18, padding:'1.25rem', display:'flex', flexDirection:'column', gap:10 }}
-              whileHover={{ scale:1.02, y:-3 }}
+              whileHover={{ scale:1.05, y:-6 }}
+              
             >
               <span style={{ fontSize:28 }}>{item.icon}</span>
               <div>
-                <p style={{ fontSize:14, fontWeight:700, color:'var(--text-primary)', marginBottom:5 }}>{item.title}</p>
+                <p style={{ fontSize:16, fontWeight:700, color:'var(--text-primary)', marginBottom:5 }}>{item.title}</p>
                 <p style={{ fontSize:13, lineHeight:1.6, color:'var(--text-secondary)' }}>{item.desc}</p>
               </div>
             </motion.div>
@@ -101,10 +102,11 @@ export default function About() {
           {HOW_IT_WORKS.map((step,i) => (
             <motion.div key={i}
               initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
-              transition={{ delay:.6 + i*.1 }}
+              transition={{ delay:.5 + i*.08, type:'spring', stiffness:280, damping:20 }}
               className="glass-card"
               style={{ borderRadius:18, padding:'1.25rem', display:'flex', flexDirection:'column', gap:12, position:'relative', overflow:'hidden' }}
-              whileHover={{ scale:1.02, y:-3 }}
+              whileHover={{ scale:1.05, y:-6 }}
+
             >
               <span style={{ position:'absolute', top:12, right:14, fontSize:28, fontWeight:900, color:'rgba(124,58,237,.12)', lineHeight:1 }}>
                 {step.step}
@@ -113,8 +115,8 @@ export default function About() {
                 <step.icon size={17} style={{ color:'#a78bfa' }} />
               </div>
               <div>
-                <p style={{ fontSize:14, fontWeight:700, color:'var(--text-primary)', marginBottom:5 }}>{step.title}</p>
-                <p style={{ fontSize:12, lineHeight:1.6, color:'var(--text-secondary)' }}>{step.desc}</p>
+                <p style={{ fontSize:16, fontWeight:700, color:'var(--text-primary)', marginBottom:5 }}>{step.title}</p>
+                <p style={{ fontSize:13, lineHeight:1.6, color:'var(--text-secondary)' }}>{step.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -154,7 +156,7 @@ export default function About() {
           <h2 style={{ fontSize:'clamp(1.2rem,3vw,1.6rem)', fontWeight:800, color:'var(--text-primary)', marginBottom:8 }}>
             Protect yourself today
           </h2>
-          <p style={{ fontSize:14, color:'var(--text-secondary)', maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
+          <p style={{ fontSize:14, color:'var(--text-primary)', maxWidth:420, margin:'0 auto', lineHeight:1.7 }}>
             Your first job search shouldn't cost you your savings. Check before you apply — it takes 10 seconds.
           </p>
         </div>

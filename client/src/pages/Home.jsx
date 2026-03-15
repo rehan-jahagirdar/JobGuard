@@ -35,13 +35,19 @@ export default function Home() {
             <motion.div
               initial={{ opacity:0, y:-14 }} animate={{ opacity:1, y:0 }} transition={{ duration:.5 }}
               style={{
-                display:'inline-flex', alignItems:'center', gap:8,
-                padding:'6px 14px', borderRadius:999,
-                background:'rgba(239,68,68,.08)', border:'1px solid rgba(239,68,68,.2)',
-                color:'#fca5a5', fontSize:12, fontWeight:600,
-              }}
+              display:'inline-flex',
+              alignItems:'center',
+              gap:8,
+              padding:'6px 14px',
+              borderRadius:999,
+              background:'var(--badge-bg)',
+              border:'1px solid var(--badge-border)',
+              color:'var(--badge-text)',
+              fontSize:12,
+              fontWeight:600,
+}}
             >
-              <span style={{ width:6, height:6, borderRadius:'50%', background:'#f87171', flexShrink:0, boxShadow:'0 0 6px rgba(239,68,68,.8)' }} />
+              <span style={{ width:6, height:6, borderRadius:'50%', background:'var(--badge-dot)', flexShrink:0, boxShadow:'0 0 6px var(--badge-dot)' }} />
               28+ lakh Cybercrime complaints reported in India (2025)
             </motion.div>
 
@@ -81,7 +87,7 @@ export default function Home() {
                   <p style={{ fontSize:'clamp(1.2rem, 3vw, 1.6rem)', fontWeight:900, color:'var(--text-primary)' }}>
                     {s.icon} {s.value}
                   </p>
-                  <p style={{ fontSize:11, marginTop:3, color:'var(--text-muted)' }}>{s.label}</p>
+                  <p style={{ fontSize:11, marginTop:3,color:'var(--text-secondary)' }}>{s.label}</p>
                 </motion.div>
               ))}
             </motion.div>
