@@ -109,8 +109,8 @@ export default function ResultCard({ result, onReset }) {
               {result.adviceForApplicant && (
                 <motion.div initial={{ opacity:0,y:6 }} animate={{ opacity:1,y:0 }} transition={{ delay:.45 }}
                   style={{ borderRadius:14, padding:'12px 14px', background:'rgba(124,58,237,.08)', border:'1px solid rgba(124,58,237,.2)' }}>
-                  <p style={{ fontSize:13, lineHeight:1.6, color:'rgba(237,233,255,.82)', wordBreak:'break-word' }}>
-                    💡 <strong style={{ color:'#a78bfa' }}>Advice: </strong>
+                    <p style={{ fontSize:13, lineHeight:1.6, color:'var(--text-secondary)', wordBreak:'break-word' }}>
+                    💡 <strong style={{ color:'var(--accent)' }}>Advice: </strong>
                     {safeStr(result.adviceForApplicant)}
                   </p>
                 </motion.div>
