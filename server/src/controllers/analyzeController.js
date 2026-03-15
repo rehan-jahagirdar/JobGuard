@@ -1,5 +1,7 @@
+// server/src/controllers/analyzeController.js
+
 import { scrapeJobPosting } from '../services/scraperService.js';
-import { analyzeWithGemini } from '../services/geminiService.js';
+import { analyzeWithGroq } from '../services/groqService.js';
 import { checkCompanyDomain } from '../services/domainService.js';
 import { db, admin } from '../config/firebase.js';
 import { nanoid } from 'nanoid';
@@ -31,8 +33,8 @@ export async function analyzePosting(req, res, next) {
       jobText = content.trim().slice(0, 6000);
     }
 
-    // Step 2: AI Analysis
-    const aiResult = await analyzeWithGemini(jobText);
+    // Step 2: AI Analysis (Updated to Groq)
+    const aiResult = await analyzeWithGroq(jobText);
 
     // Step 3: Domain check (non-blocking — don't fail if this errors)
     let domainCheck = { checked: false };
