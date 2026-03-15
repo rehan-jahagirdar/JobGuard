@@ -151,7 +151,7 @@ function Navbar({ theme, toggleTheme }) {
               <Shield size={15} color="#fff" strokeWidth={2.5} />
             </motion.div>
             <div className="hidden sm:flex" style={{ alignItems:'center', gap:7 }}>
-              <span style={{ fontWeight:900, fontSize:'1rem', letterSpacing:'-.02em', color:'var(--text-primary)' }}>
+              <span style={{ fontWeight:900, fontSize:'1.25rem', letterSpacing:'-.02em', color:'var(--text-primary)' }}>
                 JobGuard
               </span>
               <span style={{ fontSize:10, fontWeight:700, padding:'2px 7px', borderRadius:20, background:'rgba(124,58,237,.14)', border:'1px solid rgba(124,58,237,.28)', color:'#a78bfa' }}>
