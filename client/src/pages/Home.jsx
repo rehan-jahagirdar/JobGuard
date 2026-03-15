@@ -42,7 +42,7 @@ export default function Home() {
               }}
             >
               <span style={{ width:6, height:6, borderRadius:'50%', background:'#f87171', flexShrink:0, boxShadow:'0 0 6px rgba(239,68,68,.8)' }} />
-              28+ lakh cybercrime complaints reported in India (2025)
+              28+ lakh Cybercrime complaints reported in India (2025)
             </motion.div>
 
             {/* Title */}
