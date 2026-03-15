@@ -11,7 +11,7 @@
   --glass-border:  rgba(255,255,255,0.10);
   --glass-border-hover: rgba(255,255,255,0.20);
   --text-primary:  #eef2ff;
-  --text-secondary:#8b9cb8;
+  --text-secondary:#e2e8f0;
   --text-muted:    rgba(139,156,184,0.55);
   --safe:   #10b981;
   --warn:   #f59e0b;
@@ -48,7 +48,7 @@
 
   /* text */
   --text-primary: #020617;
-  --text-secondary: #1e293b;
+  --text-secondary: #0f172a;
   --text-muted: #475569;
 
   /* card */
@@ -180,13 +180,14 @@
 
 /* ── Light mode nav pills ── */
 [data-theme="light"] .nav-link-pill {
-  color: #4a5268;
+  color: #0f172a;
+  font-weight: 600;
 }
 
 [data-theme="light"] .nav-link-pill:hover {
   background: rgba(124,58,237,.08);
   border-color: rgba(124,58,237,.15);
-  color: #5b21b6;
+  color: #020617;
   box-shadow: 0 0 12px rgba(124,58,237,.1);
 }
 
