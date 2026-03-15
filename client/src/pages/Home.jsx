@@ -7,9 +7,9 @@ import ResultCard from '../components/ResultCard';
 import { useAnalyze } from '../hooks/useAnalyze';
 
 const STATS = [
-  { value:'20,000+', label:'Fraud cases since 2024', icon:'📊' },
-  { value:'₹crores', label:'Lost to fake jobs',      icon:'💸' },
-  { value:'10 sec',  label:'To detect a scam',       icon:'⚡' },
+  { value:'₹22,495+', label:'crore lost to cyber fraud in India (2025)', icon:'💸' },
+  { value:'14,000+', label:'Fake Job Websites Identified',      icon:'🚨' },
+  { value:'~10 sec',  label:'AI analysis time',       icon:'⚡' },
 ];
 
 const FEATURES = [
@@ -42,7 +42,7 @@ export default function Home() {
               }}
             >
               <span style={{ width:6, height:6, borderRadius:'50%', background:'#f87171', flexShrink:0, boxShadow:'0 0 6px rgba(239,68,68,.8)' }} />
-              20,000+ students scammed by fake jobs since 2024
+              28+ lakh cybercrime complaints reported in India (2025)
             </motion.div>
 
             {/* Title */}
