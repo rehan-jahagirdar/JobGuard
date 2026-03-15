@@ -7,12 +7,16 @@ export function useAnalyze() {
   const [error, setError]     = useState(null);
   const [step, setStep]       = useState('idle');
 
-  const analyze = async ({ type, content }) => {
+  // 1. Add userId to the destructured parameters
+  const analyze = async ({ type, content, userId }) => {
     setLoading(true); setError(null); setResult(null);
     try {
       if (type === 'url') { setStep('fetching'); await new Promise(r => setTimeout(r, 700)); }
       setStep('analyzing');
-      const data = await analyzePosting({ type, content });
+      
+      // 2. Pass userId down to your API service
+      const data = await analyzePosting({ type, content, userId });
+      
       setResult(data); setStep('done');
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Analysis failed. Please try again.');

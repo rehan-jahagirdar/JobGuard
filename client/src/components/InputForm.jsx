@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, FileText, AlertCircle, Zap, Info, X, Upload, Image } from 'lucide-react';
+import { useAuth } from '../context/AuthContext'; // 👈 Added import
 
 const EXAMPLE_FAKE = `URGENT HIRING!! Work from home earn ₹50,000 per day!! No experience needed!! Send ₹499 registration fee via Paytm to 9876543210. WhatsApp us NOW!! Send Aadhaar card copy immediately!! Only 5 seats left!!!`;
 const EXAMPLE_REAL = `Software Engineer - Microsoft India
@@ -11,6 +12,8 @@ Contact: india-careers@microsoft.com
 Benefits: Health insurance, stock options, flexible work`;
 
 export default function InputForm({ onSubmit, error }) {
+  const { user }                = useAuth(); // 👈 Grab the logged-in user
+  
   const [tab, setTab]           = useState('text');
   const [url, setUrl]           = useState('');
   const [text, setText]         = useState('');
@@ -23,7 +26,13 @@ export default function InputForm({ onSubmit, error }) {
     e.preventDefault();
     const content = tab === 'url' ? url.trim() : tab === 'screenshot' ? `[Screenshot analysis] ${screenshot?.name || 'image'}` : text.trim();
     if (!content) return;
-    onSubmit({ type: tab === 'screenshot' ? 'text' : tab, content: tab === 'screenshot' ? EXAMPLE_FAKE : content });
+    
+    // 👈 Added userId to the payload being sent to the parent component
+    onSubmit({ 
+      type: tab === 'screenshot' ? 'text' : tab, 
+      content: tab === 'screenshot' ? EXAMPLE_FAKE : content,
+      userId: user ? user.uid : 'anonymous'
+    });
   };
 
   const valid = tab === 'url'

@@ -1,17 +1,8 @@
 // client/src/pages/History.jsx
 import { motion } from 'framer-motion';
 import { Clock, Search, Shield, AlertTriangle, XCircle, ChevronRight, Trash2, Lock } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-
-const MOCK_HISTORY = [
-  { id:1, jobTitle:'Software Engineer – Microsoft India',      company:'Microsoft',          trustScore:88, verdict:'SAFE',        flags:1, date:'2026-03-15' },
-  { id:2, jobTitle:'Work from Home Data Entry – Earn Daily',  company:'Unknown',            trustScore:4,  verdict:'LIKELY_FAKE', flags:6, date:'2026-03-14' },
-  { id:3, jobTitle:'Digital Marketing Executive',             company:'DigiWork Solutions', trustScore:52, verdict:'SUSPICIOUS',  flags:3, date:'2026-03-13' },
-  { id:4, jobTitle:'React Developer – Infosys',               company:'Infosys',            trustScore:91, verdict:'SAFE',        flags:0, date:'2026-03-12' },
-  { id:5, jobTitle:'URGENT!! Part-time Online Jobs',          company:'FastCash Inc',       trustScore:8,  verdict:'LIKELY_FAKE', flags:7, date:'2026-03-11' },
-  { id:6, jobTitle:'HR Manager – Tata Consultancy',           company:'TCS',                trustScore:85, verdict:'SAFE',        flags:1, date:'2026-03-10' },
-];
 
 const VCFG = {
   SAFE:        { color:'#10b981', bg:'rgba(16,185,129,.08)',  border:'rgba(16,185,129,.2)',  label:'Safe'        },
@@ -67,10 +58,64 @@ function AuthGate() {
 }
 
 export default function HistoryPage() {
-  const { user }          = useAuth();
+  const { user }            = useAuth();
   const [search, setSearch]   = useState('');
   const [filter, setFilter]   = useState('ALL');
-  const [history, setHistory] = useState(MOCK_HISTORY);
+  
+  // 1. Start with an empty array
+  const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // 2. Fetch from your backend when the component loads
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchHistory = async () => {
+      try {
+        setLoading(true);
+        
+        // IMPORTANT: Replace import.meta.env.VITE_API_URL with your actual backend URL variable if it's different!
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+        
+        const response = await fetch(`${API_BASE_URL}/history/${user.uid}`);
+        
+        if (!response.ok) throw new Error('Failed to fetch history');
+        
+        const data = await response.json();
+        
+        // 3. Format the data to match your UI's expected structure
+        if (data.history) {
+          const formattedData = data.history.map(item => {
+            // Safely parse Firestore timestamps
+            let dateStr = 'Recent';
+            if (item.createdAt && item.createdAt._seconds) {
+              dateStr = new Date(item.createdAt._seconds * 1000).toLocaleDateString();
+            } else if (item.createdAt) {
+              dateStr = new Date(item.createdAt).toLocaleDateString();
+            }
+
+            return {
+              id: item.id,
+              jobTitle: item.jobTitle || 'Unknown Title',
+              company: item.companyName || 'Unknown Company',
+              trustScore: item.trustScore || 0,
+              verdict: item.verdict || 'SUSPICIOUS',
+              flags: item.flags?.length || 0, // Fallback if backend doesn't send flag count
+              date: dateStr,
+              shareId: item.shareId
+            };
+          });
+          setHistory(formattedData);
+        }
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, [user]);
 
   if (!user) return <AuthGate />;
 
@@ -145,7 +190,11 @@ export default function HistoryPage() {
 
       {/* List */}
       <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem' }}>
-        {filtered.length === 0 ? (
+        {loading ? (
+           <div className="glass-card" style={{ borderRadius:18, padding:'2.5rem', textAlign:'center' }}>
+             <p style={{ fontSize:14, color:'var(--text-secondary)' }}>Loading your history...</p>
+           </div>
+        ) : filtered.length === 0 ? (
           <div className="glass-card" style={{ borderRadius:18, padding:'2.5rem', textAlign:'center' }}>
             <p style={{ fontSize:28, marginBottom:8 }}>🔍</p>
             <p style={{ fontSize:14, color:'var(--text-secondary)' }}>No results found</p>
@@ -158,6 +207,7 @@ export default function HistoryPage() {
               className="glass-card"
               style={{ borderRadius:18, padding:'1rem 1.25rem', display:'flex', alignItems:'center', gap:'1rem', cursor:'pointer' }}
               whileHover={{ scale:1.005, x:3 }}
+              onClick={() => window.open(`/result/${item.shareId}`, '_blank')} // Optional: click to open result
             >
               <div style={{ width:46, height:46, borderRadius:14, background:c.bg, border:`1px solid ${c.border}`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
                 <span style={{ fontSize:14, fontWeight:900, color:c.color, lineHeight:1 }}>{item.trustScore}</span>
@@ -175,7 +225,11 @@ export default function HistoryPage() {
                 </div>
               </div>
               <div style={{ display:'flex', alignItems:'center', gap:7, flexShrink:0 }}>
-                <button onClick={e => { e.stopPropagation(); setHistory(h => h.filter(x => x.id!==item.id)); }}
+                <button onClick={e => { 
+                    e.stopPropagation(); 
+                    // Note: This only removes it from the screen. If you want to delete from Firebase, you need a DELETE api endpoint!
+                    setHistory(h => h.filter(x => x.id!==item.id)); 
+                  }}
                   style={{ padding:6, borderRadius:8, background:'transparent', border:'none', cursor:'pointer', color:'var(--text-muted)', display:'flex' }}>
                   <Trash2 size={13} />
                 </button>
