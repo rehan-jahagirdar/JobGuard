@@ -274,7 +274,7 @@ export default function App() {
             </Routes>
           </main>
           <footer style={{ position:'relative', zIndex:10, textAlign:'center', padding:'1rem', borderTop:'1px solid var(--glass-border)', color:'var(--text-muted)', fontSize:12 }}>
-            Built with ❤️ for Indian job seekers · JobGuard 2026 · Powered by Gemini AI
+            Built with ❤️ for Indian job seekers · JobGuard 2026 · Powered by Groq AI
           </footer>
         </div>
       </BrowserRouter>
