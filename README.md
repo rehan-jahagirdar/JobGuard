@@ -42,5 +42,5 @@ Follow these steps to set up the project locally on your machine.
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/rehan-jahagirdar/JobGuard.git](https://github.com/your-username/JobGuard.git)
+git clone [https://github.com/rehan-jahagirdar/JobGuard.git](https://github.com/rehan-jahagirdar/JobGuard.git)
 cd JobGuard
