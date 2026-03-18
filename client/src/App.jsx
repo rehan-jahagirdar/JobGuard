@@ -203,7 +203,7 @@ function Navbar({ theme, toggleTheme }) {
             </motion.button>
 
             {/* GitHub */}
-            <a href="https://github.com" target="_blank" rel="noreferrer"
+            <a href="https://github.com/rehan-jahagirdar/JobGuard" target="_blank" rel="noreferrer"
               className="btn-glass" style={{ padding:'6px 12px', fontSize:12 }}>
               <Github size={13} />
               <span className="hidden sm:inline">GitHub</span>
