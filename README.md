@@ -22,7 +22,7 @@ With the rapid growth of online recruitment, fraudulent job postings have become
 | Component | Technology |
 | :--- | :--- |
 | **Frontend** | React.js (Responsive UI)  |
-| **Backend** | [cite_start]Node.js & Express  |
+| **Backend** | Node.js & Express  |
 | **AI Engine** | NLP models via Groq API integration |
 | **Database** | MongoDB / Firebase |
 | **Deployment** | Vercel (Frontend) & Railway (Backend) |
