@@ -11,9 +11,9 @@ With the rapid growth of online recruitment, fraudulent job postings have become
 ---
 
 ## ✨ Key Features
-* [cite_start]**Instant Risk Scoring:** Categorizes analyzed job postings as **Low**, **Medium**, or **High** risk[cite: 26].
-* **Explainable AI:** Does not just provide a generic warning. [cite_start]It gives clear, logical reasons for the assigned risk score[cite: 29, 30].
-* [cite_start]**Red-Flag Highlighting:** Pinpoints and highlights the exact suspicious sentences (e.g., upfront processing fees) directly within the text[cite: 27, 28].
+* **Instant Risk Scoring:** Categorizes analyzed job postings as **Low**, **Medium**, or **High** risk.
+* **Explainable AI:** Does not just provide a generic warning.It gives clear, logical reasons for the assigned risk score.
+* **Red-Flag Highlighting:** Pinpoints and highlights the exact suspicious sentences (e.g., upfront processing fees) directly within the text.
 * **Fast & Responsive UI:** A seamless user experience that allows users to paste descriptions or links and get results in seconds.
 
 ---
@@ -21,8 +21,8 @@ With the rapid growth of online recruitment, fraudulent job postings have become
 ## 🛠️ Tech Stack
 | Component | Technology |
 | :--- | :--- |
-| **Frontend** | [cite_start]React.js (Responsive UI) [cite: 55] |
-| **Backend** | [cite_start]Node.js & Express [cite: 56] |
+| **Frontend** | React.js (Responsive UI)  |
+| **Backend** | [cite_start]Node.js & Express  |
 | **AI Engine** | NLP models via Groq API integration |
 | **Database** | MongoDB / Firebase |
 | **Deployment** | Vercel (Frontend) & Railway (Backend) |
